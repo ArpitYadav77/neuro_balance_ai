@@ -1,0 +1,13 @@
+{
+  "name": "neurobalance-ai",
+  "version": "1.0.0",
+  "description": "NeuroBalance AI — monorepo convenience scripts",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:ai": "cd ai-service && uvicorn src.main:app --reload --port 8000",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "docker:up": "docker-compose up --build",
+    "docker:down": "docker-compose down"
+  }
+}
