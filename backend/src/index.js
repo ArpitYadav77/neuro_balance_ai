@@ -36,14 +36,19 @@ initWebSocket(server);
 // ── Boot ──────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 4000;
 
-(async () => {
-  try {
-    await initDB();
-    server.listen(PORT, () => {
-      console.log(`[NeuroBalance] Backend running on port ${PORT}`);
-    });
-  } catch (err) {
-    console.error('[NeuroBalance] Failed to start:', err);
-    process.exit(1);
-  }
-})();
+// Export app for serverless deployments (like Vercel)
+module.exports = app;
+
+if (require.main === module) {
+  (async () => {
+    try {
+      await initDB();
+      server.listen(PORT, () => {
+        console.log(`[NeuroBalance] Backend running on port ${PORT}`);
+      });
+    } catch (err) {
+      console.error('[NeuroBalance] Failed to start:', err);
+      process.exit(1);
+    }
+  })();
+}

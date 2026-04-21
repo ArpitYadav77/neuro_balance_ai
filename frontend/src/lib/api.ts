@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+const isDev = typeof window !== 'undefined' ? window.location.hostname === 'localhost' : process.env.NODE_ENV === 'development';
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (isDev ? 'http://localhost:4000' : '');
 
 export const api = axios.create({
   baseURL: BASE_URL,
