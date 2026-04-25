@@ -13,17 +13,23 @@ const server = createServer(app);
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: true, // Allow all origins for the demo
   credentials: true,
 }));
 app.use(express.json());
+
+// Log requests to help debug Vercel routing
+app.use((req, _res, next) => {
+  console.log(`[NeuroBalance] ${req.method} ${req.url}`);
+  next();
+});
+
 app.use(async (req, res, next) => {
   try {
     await initDB();
     next();
   } catch (err) {
     console.error('[NeuroBalance] DB Init Error:', err);
-    // Continue anyway, it might fall back to pg-mem internally
     next();
   }
 });
@@ -37,8 +43,12 @@ const authLimiter = rateLimit({
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => res.json({ status: 'ok', service: 'neurobalance-backend' }));
+
+// Support both prefixed and non-prefixed routes for Vercel compatibility
 app.use('/api/auth', authLimiter, authRoutes);
+app.use('/auth', authLimiter, authRoutes);
 app.use('/api', dataRoutes);
+app.use('/', dataRoutes);
 
 // ── WebSocket ─────────────────────────────────────────────────────────────────
 initWebSocket(server);
