@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const { pool } = require('../db');
 const authMiddleware = require('../middleware/auth');
 
+const JWT_SECRET = process.env.JWT_SECRET || 'neurobalance-ai-fallback-secret-for-demo-only';
+
 const router = express.Router();
 
 // ── POST /api/auth/signup ─────────────────────────────────────────────────────
@@ -36,7 +38,7 @@ router.post('/signup', async (req, res) => {
       [user.id],
     );
 
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
       expiresIn: '7d',
     });
 
@@ -68,7 +70,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
       expiresIn: '7d',
     });
 

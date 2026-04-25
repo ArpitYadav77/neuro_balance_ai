@@ -8,36 +8,45 @@ let isMemDb = false;
 let initialized = false;
 
 async function setupPool() {
-  const realPool = new Pool({ connectionString: process.env.DATABASE_URL });
-  try {
-    // Test the real connection
-    const client = await realPool.connect();
-    client.release();
-    console.log('[DB] Connected to PostgreSQL successfully.');
-    pool = realPool;
-  } catch (err) {
-    console.warn('[DB] Failed to connect to PostgreSQL. Falling back to in-memory database (pg-mem) for DEMO mode.');
-    isMemDb = true;
-    
-    const mem = newDb();
-    mem.public.registerFunction({
-      name: 'gen_random_uuid',
-      type: 'uuid',
-      returns: 'uuid',
-      implementation: () => uuidv4(),
-    });
-    
-    // We mock "CREATE EXTENSION" so queries that contain it won't fail
-    mem.public.interceptQueries(text => {
-      if (text.trim().toUpperCase().startsWith('CREATE EXTENSION')) {
-        return []; // Do nothing
-      }
-      return null;
-    });
-
-    const { Pool: MemPool } = mem.adapters.createPg();
-    pool = new MemPool();
+  const dbUrl = process.env.DATABASE_URL;
+  
+  if (dbUrl && dbUrl !== 'undefined') {
+    const realPool = new Pool({ connectionString: dbUrl });
+    try {
+      // Test the real connection with a short timeout
+      const client = await realPool.connect();
+      client.release();
+      console.log('[DB] Connected to PostgreSQL successfully.');
+      pool = realPool;
+      return;
+    } catch (err) {
+      console.warn('[DB] Failed to connect to PostgreSQL:', err.message);
+    }
+  } else {
+    console.warn('[DB] No DATABASE_URL found. Using in-memory fallback.');
   }
+
+  // Fallback to pg-mem
+  isMemDb = true;
+  console.log('[DB] Initializing pg-mem fallback...');
+  
+  const mem = newDb();
+  mem.public.registerFunction({
+    name: 'gen_random_uuid',
+    type: 'uuid',
+    returns: 'uuid',
+    implementation: () => uuidv4(),
+  });
+  
+  mem.public.interceptQueries(text => {
+    if (text.trim().toUpperCase().startsWith('CREATE EXTENSION')) {
+      return [];
+    }
+    return null;
+  });
+
+  const { Pool: MemPool } = mem.adapters.createPg();
+  pool = new MemPool();
 }
 
 async function initDB() {
