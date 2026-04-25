@@ -1,27 +1,17 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "backend/src/index.js",
-      "use": "@vercel/node"
+  "experimentalServices": {
+    "frontend": {
+      "entrypoint": "frontend",
+      "routePrefix": "/",
+      "framework": "nextjs"
     },
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/next"
+    "backend": {
+      "entrypoint": "backend",
+      "routePrefix": "/api"
     },
-    {
-      "src": "ai-service/src/main.py",
-      "use": "@vercel/python"
+    "ai-service": {
+      "entrypoint": "ai-service",
+      "routePrefix": "/ai-service"
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/backend/src/index.js"
-    },
-    {
-      "source": "/ai-service/(.*)",
-      "destination": "/ai-service/src/main.py"
-    }
-  ]
+  }
 }
