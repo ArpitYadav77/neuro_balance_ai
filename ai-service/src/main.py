@@ -8,6 +8,7 @@ from __future__ import annotations
 import asyncio
 import json
 import math
+import os
 from typing import List, Optional
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
@@ -18,6 +19,7 @@ app = FastAPI(
     title="NeuroBalance AI Service",
     description="Real-time cognitive stress scoring from eye-tracking biometrics",
     version="1.0.0",
+    root_path="/ai-service" if os.environ.get("VERCEL") else ""
 )
 
 app.add_middleware(
