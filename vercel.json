@@ -8,6 +8,10 @@
     {
       "src": "frontend/package.json",
       "use": "@vercel/next"
+    },
+    {
+      "src": "ai-service/src/main.py",
+      "use": "@vercel/python"
     }
   ],
   "rewrites": [
@@ -16,8 +20,8 @@
       "destination": "/backend/src/index.js"
     },
     {
-      "source": "/(.*)",
-      "destination": "/frontend/$1"
+      "source": "/ai-service/(.*)",
+      "destination": "/ai-service/src/main.py"
     }
   ]
 }

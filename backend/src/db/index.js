@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 
 let pool;
 let isMemDb = false;
+let initialized = false;
 
 async function setupPool() {
   const realPool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -40,6 +41,7 @@ async function setupPool() {
 }
 
 async function initDB() {
+  if (initialized) return;
   if (!pool) await setupPool();
   
   const client = await pool.connect();
@@ -157,6 +159,7 @@ async function initDB() {
     }
 
     await client.query('COMMIT');
+    initialized = true;
     console.log('[DB] Schema initialized successfully');
   } catch (err) {
     if (!isMemDb) await client.query('ROLLBACK');

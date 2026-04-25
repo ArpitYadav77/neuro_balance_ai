@@ -17,6 +17,16 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+app.use(async (req, res, next) => {
+  try {
+    await initDB();
+    next();
+  } catch (err) {
+    console.error('[NeuroBalance] DB Init Error:', err);
+    // Continue anyway, it might fall back to pg-mem internally
+    next();
+  }
+});
 
 // Rate limiting on auth endpoints
 const authLimiter = rateLimit({
