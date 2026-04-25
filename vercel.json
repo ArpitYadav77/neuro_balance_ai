@@ -1,16 +1,16 @@
 {
   "experimentalServices": {
-    "frontend": {
-      "entrypoint": "frontend",
+    "web": {
+      "entrypoint": "apps/web",
       "routePrefix": "/",
       "framework": "nextjs"
     },
-    "backend": {
-      "entrypoint": "backend",
+    "api": {
+      "entrypoint": "apps/api",
       "routePrefix": "/api"
     },
     "ai-service": {
-      "entrypoint": "ai-service",
+      "entrypoint": "services/ai",
       "routePrefix": "/ai-service"
     }
   }

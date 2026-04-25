@@ -1,5 +1,5 @@
 {
-  "name": "neurobalance-backend",
+  "name": "@neurobalance/api",
   "version": "1.0.0",
   "description": "NeuroBalance AI — Express + WebSocket backend",
   "main": "src/index.js",

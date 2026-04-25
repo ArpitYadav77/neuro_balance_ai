@@ -1,17 +1,20 @@
 {
   "name": "neurobalance-ai",
   "version": "1.0.0",
-  "description": "NeuroBalance AI — monorepo convenience scripts",
+  "private": true,
+  "description": "NeuroBalance AI — Optimized Monorepo",
   "scripts": {
-    "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:ai": "cd ai-service && uvicorn src.main:app --reload --port 8000",
-    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:api": "npm run dev --workspace=@neurobalance/api",
+    "dev:web": "npm run dev --workspace=@neurobalance/web",
+    "dev:ai": "cd services/ai && uvicorn src.main:app --reload --port 8000",
+    "install:all": "npm install",
     "docker:up": "docker-compose up --build",
-    "docker:down": "docker-compose down"
+    "docker:down": "docker-compose down",
+    "clean": "Remove-Item -Recurse -Force **/node_modules, **/dist, **/.next, **/tsconfig.tsbuildinfo -ErrorAction SilentlyContinue"
   },
   "workspaces": [
-    "frontend",
-    "backend"
+    "apps/web",
+    "apps/api",
+    "packages/*"
   ]
 }
